@@ -1,0 +1,36 @@
+# temp files
+*~
+.DS_Store
+
+# project files
+CMakeLists.txt.user*
+*.pro.user
+*.user
+*.txt.user.*
+*.kdev4
+*.kdev*
+.kdev4
+.classpath
+.project
+.settings
+local.properties
+
+# build artifacts
+bin
+lib
+gen
+obj
+build
+*build*
+QtLogger
+moc_*.c??
+uic_*.c??
+rcc_*.c??
+*.autosave
+lib*.so
+lib*.a
+
+*.class
+*.apk
+*.ap_
+*.dex
