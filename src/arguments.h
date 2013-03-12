@@ -1,23 +1,34 @@
 #ifndef ARGUMENTS_H
 #define ARGUMENTS_H
 
-#include <QStringList>
+#include <vector>
+#include <string>
 
 class Arguments {
 public:
-    Arguments(QStringList rawArguments);
+    typedef std::vector<std::string> ArgsList;
+
+    explicit Arguments();
+    explicit Arguments(int &argc, char *argv[]);
     ~Arguments();
 
-    QString calledBinaryName();
+    const ArgsList& list() const;
 
-    QString getFirstArgument();
+    std::string calledBinaryName() const;
 
-    bool containsKey(const char* shortKey, const char* longKey);
-    bool containsKey(const char* key);
-    bool containsLongKey(const char* longKey);
+    bool containsKey(char shortKey, const char* longKey) const;
+    bool containsKey(char key) const;
+    bool containsLongKey(const char* longKey) const;
+    bool contains(const char* value) const;
+    bool contains(const std::string& value) const;
 
 private:
-    QStringList _rawArguments;
+    ArgsList parseArguments(int& argc, char* argv[]) const;
+    bool isKey(const std::string& value) const;
+    bool isLongKey(const std::string& value) const;
+
+
+    ArgsList _rawArguments;
 };
 
 #endif //ARGUMENTS_H
