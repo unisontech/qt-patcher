@@ -1,6 +1,11 @@
 #include "patcherapplication.h"
 #include <iostream>
-#include <cstdio>
+#include <algorithm>
+#include <queue>
+#include "patcher.h"
+#include "binarypatcher.h"
+#include "textpatcher.h"
+#include "utils/stringformat.h"
 
 PatcherApplication::PatcherApplication(int& argc, char *argv[])
     : args(argc, argv)
@@ -52,9 +57,22 @@ bool PatcherApplication::isArgumentsValid(Arguments args) const
 }
 PatcherApplication::Error PatcherApplication::patchQtInDir(const std::string& pathToQt) const
 {
-    if (pathToQt.data()) {
-        // do nothing
-    }
+    const char* executablesDir = "bin";
+    std::vector<std::string> executablesToPatch;
+    executablesToPatch.push_back("qmake");
+    executablesToPatch.push_back("qmake.exe");
+
+    const char* librariesDir = "lib";
+    std::vector<std::string> librariesToPatch = createLibraryNamesList("QtCore");
+
+    std::vector<std::string> textFilesToPatch;
+    textFilesToPatch.push_back("/mkspecs/default/qmake.conf");
+    textFilesToPatch.push_back("/.qmake.cache");
+
+    std::string(executablesDir) == std::string(librariesDir);
+    std::string(executablesDir) == pathToQt;
+    librariesToPatch.empty();
+
     return Ok;
 }
 
@@ -73,6 +91,36 @@ void PatcherApplication::printErrorMessage(const std::string& pathToQt, PatcherA
         std::cout << "Error: unknown internal error." << std::endl;
         return;
     }
+}
+
+std::vector<std::string> PatcherApplication::createLibraryNamesList(const char *baseLibraryName) const
+{
+    std::vector<std::string> result;
+    if (baseLibraryName == 0)
+        return result;
+
+    // on Windows every library is called dll and lib
+    // release
+    result.push_back(stringformat("%s.%s", baseLibraryName, "dll"));
+    result.push_back(stringformat("%s.%s", baseLibraryName, "lib"));
+    // debug
+    result.push_back(stringformat("%sd.%s", baseLibraryName, "dll"));
+    result.push_back(stringformat("%sd.%s", baseLibraryName, "lib"));
+
+    // on *unix they are called *.so, *.a, *.la or *.dylib
+    result.push_back(stringformat("lib%s.%s", baseLibraryName, "so"));
+    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "so"));
+
+    result.push_back(stringformat("lib%s.%s", baseLibraryName, "a"));
+    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "a"));
+
+    result.push_back(stringformat("lib%s.%s", baseLibraryName, "la"));
+    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "la"));
+
+    result.push_back(stringformat("lib%s.%s", baseLibraryName, "dylib"));
+    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "dylib"));
+
+    return result;
 }
 
 void PatcherApplication::printHelp()

@@ -26,8 +26,9 @@ private:
     bool isArgumentsValid(Arguments args) const;
     Error checkPathToQt(const std::string& pathToQt) const;
     Error patchQtInDir(const std::string& pathToQt) const;
-
     void printErrorMessage(const std::string &pathToQt, Error error);
+
+    std::vector<std::string> createLibraryNamesList(const char* baseLibraryName) const;
 
     void printHelp();
     void printVersion();
