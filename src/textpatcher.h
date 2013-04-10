@@ -8,7 +8,7 @@ public:
     TextPatcher();
     virtual ~TextPatcher();
 
-    virtual bool patch() const;
+    virtual void patch(const std::string &newPathQt, const std::string &fileName) const;
 };
 
 #endif // TEXTPATCHER_H

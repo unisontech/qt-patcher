@@ -8,8 +8,9 @@ TextPatcher::~TextPatcher()
 {
 }
 
-bool TextPatcher::patch() const
+void TextPatcher::patch(const std::string &newPathQt, const std::string &fileName) const
 {
-    return false;
+    newPathQt.empty();
+    fileName.empty();
 }
 
