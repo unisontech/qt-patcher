@@ -7,7 +7,7 @@ set(SOURCES
     binarypatcher.cpp
     textpatcher.cpp
 
-    utils/stringformat.cpp
+    utils/stringutils.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})

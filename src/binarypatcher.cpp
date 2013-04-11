@@ -3,7 +3,7 @@
 #include <fstream>
 #include <algorithm>
 
-#include "utils/stringformat.h"
+#include "utils/stringutils.h"
 
 BinaryPatcher::BinaryPatcher()
 {
@@ -51,7 +51,7 @@ BinaryPatcher::ByteArray BinaryPatcher::readFileData(const std::string &fileName
 {
     std::ifstream file(fileName, std::ios::in | std::ios::binary | std::ios::ate);
     if (!file.is_open())
-        throw std::runtime_error(stringformat("Coundn't open file for reading: %s", fileName));
+        throw std::runtime_error(string_utils::format("Coundn't open file for reading: %s", fileName));
 
     std::ifstream::pos_type fileSize = file.tellg();
     //ByteArray fileData('\0', fileSize);
@@ -59,7 +59,7 @@ BinaryPatcher::ByteArray BinaryPatcher::readFileData(const std::string &fileName
 
     file.seekg(0, std::ios::beg);
     if( !file.read(&fileData[0], fileSize) )
-        throw std::runtime_error(stringformat("Failed to read from file: %s", fileName));
+        throw std::runtime_error(string_utils::format("Failed to read from file: %s", fileName));
 
     return fileData;
 }
@@ -101,9 +101,9 @@ void BinaryPatcher::saveDataToFile(
 {
     std::ofstream file(fileName, std::ios::out | std::ios::binary | std::ios::trunc);
     if (!file.is_open())
-        throw std::runtime_error(stringformat("Coundn't open file for writing: %s", fileName));
+        throw std::runtime_error(string_utils::format("Coundn't open file for writing: %s", fileName));
 
     file.seekp(0, std::ios::beg);
     if (!file.write(&data[0], data.size()))
-        throw std::runtime_error(stringformat("Coundn't write to file: %s", fileName));
+        throw std::runtime_error(string_utils::format("Coundn't write to file: %s", fileName));
 }

@@ -5,7 +5,7 @@
 #include "patcher.h"
 #include "binarypatcher.h"
 #include "textpatcher.h"
-#include "utils/stringformat.h"
+#include "utils/stringutils.h"
 
 PatcherApplication::PatcherApplication(int& argc, char *argv[])
     : args(argc, argv)
@@ -101,24 +101,24 @@ std::vector<std::string> PatcherApplication::createLibraryNamesList(const char *
 
     // on Windows every library is called dll and lib
     // release
-    result.push_back(stringformat("%s.%s", baseLibraryName, "dll"));
-    result.push_back(stringformat("%s.%s", baseLibraryName, "lib"));
+    result.push_back(string_utils::format("%s.%s", baseLibraryName, "dll"));
+    result.push_back(string_utils::format("%s.%s", baseLibraryName, "lib"));
     // debug
-    result.push_back(stringformat("%sd.%s", baseLibraryName, "dll"));
-    result.push_back(stringformat("%sd.%s", baseLibraryName, "lib"));
+    result.push_back(string_utils::format("%sd.%s", baseLibraryName, "dll"));
+    result.push_back(string_utils::format("%sd.%s", baseLibraryName, "lib"));
 
     // on *unix they are called *.so, *.a, *.la or *.dylib
-    result.push_back(stringformat("lib%s.%s", baseLibraryName, "so"));
-    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "so"));
+    result.push_back(string_utils::format("lib%s.%s", baseLibraryName, "so"));
+    result.push_back(string_utils::format("lib%sd.%s", baseLibraryName, "so"));
 
-    result.push_back(stringformat("lib%s.%s", baseLibraryName, "a"));
-    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "a"));
+    result.push_back(string_utils::format("lib%s.%s", baseLibraryName, "a"));
+    result.push_back(string_utils::format("lib%sd.%s", baseLibraryName, "a"));
 
-    result.push_back(stringformat("lib%s.%s", baseLibraryName, "la"));
-    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "la"));
+    result.push_back(string_utils::format("lib%s.%s", baseLibraryName, "la"));
+    result.push_back(string_utils::format("lib%sd.%s", baseLibraryName, "la"));
 
-    result.push_back(stringformat("lib%s.%s", baseLibraryName, "dylib"));
-    result.push_back(stringformat("lib%sd.%s", baseLibraryName, "dylib"));
+    result.push_back(string_utils::format("lib%s.%s", baseLibraryName, "dylib"));
+    result.push_back(string_utils::format("lib%sd.%s", baseLibraryName, "dylib"));
 
     return result;
 }
