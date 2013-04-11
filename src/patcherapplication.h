@@ -10,6 +10,11 @@ public:
         // --- arguments
         InvalidArguments = 1,
 
+        // --- pre-patching errors
+        ExecutablesNotFound = 11,
+        LibrariesNotFound = 12,
+        MKSpecsNotFound = 13,
+
         // --- patching errors
 
 
@@ -29,6 +34,13 @@ private:
     void printErrorMessage(const std::string &pathToQt, Error error);
 
     std::vector<std::string> createLibraryNamesList(const char* baseLibraryName) const;
+
+    std::vector<std::string> executablesToPatch(const std::string& pathToQt) const;
+    std::vector<std::string> librariesToPatch(const std::string& pathToQt) const;
+    std::vector<std::string> mkspecsToPatch(const std::string& pathToQt) const;
+
+
+    std::vector<std::string> existingFiles(const std::vector<std::string>& files) const;
 
     void printHelp();
     void printVersion();

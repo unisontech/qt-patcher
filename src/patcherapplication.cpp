@@ -60,21 +60,28 @@ bool PatcherApplication::isArgumentsValid(Arguments args) const
 }
 PatcherApplication::Error PatcherApplication::patchQtInDir(const std::string& pathToQt) const
 {
-    const char* executablesDir = "bin";
-    std::vector<std::string> executablesToPatch;
-    executablesToPatch.push_back("qmake");
-    executablesToPatch.push_back("qmake.exe");
+    string_utils::strings executables = executablesToPatch(pathToQt);
+    if (executables.empty())
+        return ExecutablesNotFound;
 
-    const char* librariesDir = "lib";
-    std::vector<std::string> librariesToPatch = createLibraryNamesList("QtCore");
+    string_utils::strings libraries = librariesToPatch(pathToQt);
+    if (libraries.empty())
+        return LibrariesNotFound;
 
-    std::vector<std::string> textFilesToPatch;
-    textFilesToPatch.push_back("/mkspecs/default/qmake.conf");
-    textFilesToPatch.push_back("/.qmake.cache");
+    string_utils::strings mkspecs = mkspecsToPatch(pathToQt);
+    if (mkspecs.empty())
+        return MKSpecsNotFound;
 
-    std::string(executablesDir) == std::string(librariesDir);
-    std::string(executablesDir) == pathToQt;
-    librariesToPatch.empty();
+    std::cout << "Will patch following files:" << std::endl;
+    for(string_utils::strings::iterator it = executables.begin(); it != executables.end(); ++ it) {
+        std::cout << *it << std::endl;
+    }
+    for(string_utils::strings::iterator it = libraries.begin(); it != libraries.end(); ++ it) {
+        std::cout << *it << std::endl;
+    }
+    for(string_utils::strings::iterator it = mkspecs.begin(); it != mkspecs.end(); ++ it) {
+        std::cout << *it << std::endl;
+    }
 
     return Ok;
 }
@@ -86,6 +93,15 @@ void PatcherApplication::printErrorMessage(const std::string& pathToQt, PatcherA
         return;
     case InvalidArguments:
         printHelp();
+        return;
+    case ExecutablesNotFound:
+        std::cout << "Error: Failed to find Qt executables in dir [" << pathToQt << "]." << std::endl;
+        return;
+    case LibrariesNotFound:
+        std::cout << "Error: Failed to find Qt libraries in dir [" << pathToQt << "]." << std::endl;
+        return;
+    case MKSpecsNotFound:
+        std::cout << "Error: Failed to find Qt mkspec files in dir [" << pathToQt << "]." << std::endl;
         return;
     case TooLongPathToQt:
         std::cout << "Warning: Path [ " << pathToQt << " ] is too long. Patcher will most likely fail to read files." << std::endl;
@@ -124,6 +140,49 @@ std::vector<std::string> PatcherApplication::createLibraryNamesList(const char *
     result.push_back(string_utils::format("lib%sd.%s", baseLibraryName, "dylib"));
 
     return result;
+}
+
+std::vector<std::string> PatcherApplication::executablesToPatch(const std::string &pathToQt) const
+{
+    const char* executablesDir = "bin";
+    string_utils::strings executablesToPatch;
+    executablesToPatch.push_back(pathToQt + '/' + executablesDir + '/' + "qmake");
+    executablesToPatch.push_back(pathToQt + '/' + executablesDir + '/' + "qmake.exe");
+
+    return existingFiles(executablesToPatch);
+}
+
+std::vector<std::string> PatcherApplication::librariesToPatch(const std::string &pathToQt) const
+{
+    const char* librariesDir = "lib";
+    std::vector<std::string> librariesToPatch = createLibraryNamesList("QtCore");
+    string_utils::strings libraries;
+
+    for(string_utils::strings::iterator it = librariesToPatch.begin(); it != librariesToPatch.end(); ++ it) {
+        libraries.push_back(pathToQt + '/' + librariesDir + '/' + *it);
+    }
+
+    return existingFiles(libraries);
+}
+
+std::vector<std::string> PatcherApplication::mkspecsToPatch(const std::string &pathToQt) const
+{
+    string_utils::strings mkspecs;
+    mkspecs.push_back(pathToQt + "/mkspecs/default/qmake.conf");
+    mkspecs.push_back(pathToQt + "/.qmake.cache");
+
+    return existingFiles(mkspecs);
+}
+
+std::vector<std::string> PatcherApplication::existingFiles(const std::vector<std::string> &files) const
+{
+    string_utils::strings foundFiles;
+    for(string_utils::strings::const_iterator it = files.begin();
+        it != files.end(); ++it) {
+        if (file_utils::fileExists(*it))
+            foundFiles.push_back(*it);
+    }
+    return foundFiles;
 }
 
 void PatcherApplication::printHelp()
