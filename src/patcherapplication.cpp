@@ -6,6 +6,7 @@
 #include "binarypatcher.h"
 #include "textpatcher.h"
 #include "utils/stringutils.h"
+#include "utils/fileutils.h"
 
 PatcherApplication::PatcherApplication(int& argc, char *argv[])
     : args(argc, argv)
@@ -51,6 +52,8 @@ bool PatcherApplication::isArgumentsValid(Arguments args) const
     if ( args.list().size() != 2 )
         return false;
     if ( args.list().at(1).empty() )
+        return false;
+    if ( !file_utils::isDirectory(args.list().at(1)) )
         return false;
 
     return true;

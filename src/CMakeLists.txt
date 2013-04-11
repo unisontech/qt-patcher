@@ -7,6 +7,7 @@ set(SOURCES
     binarypatcher.cpp
     textpatcher.cpp
 
+    utils/fileutils.cpp
     utils/stringutils.cpp
 )
 
