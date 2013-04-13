@@ -13,7 +13,7 @@ bool fileExists(const std::string& filename)
 bool isDirectory(const std::string& filename)
 {
     struct stat buf;
-    return ::stat(filename.c_str(), &buf) != -1 && (buf.st_mode & _S_IFDIR);
+    return ::stat(filename.c_str(), &buf) != -1 && (buf.st_mode & __S_IFDIR);
 }
 
 }

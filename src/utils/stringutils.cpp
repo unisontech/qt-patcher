@@ -3,6 +3,7 @@
 #include <functional>
 #include <cctype>
 #include <locale>
+#include <cstdio>
 
 namespace string_utils {
 
@@ -56,7 +57,7 @@ strings split(const std::string& string, const std::string& delimiter)
     strings result;
 
     // TODO: not really most efficient but simple implementation
-    unsigned int pos = string.find(delimiter);
+    std::size_t pos = string.find(delimiter);
     if (pos == std::string::npos) {
         result.push_back(string);
     } else {

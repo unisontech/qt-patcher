@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <algorithm>
+#include <stdexcept>
 
 TextPatcher::TextPatcher()
 {
@@ -34,9 +35,9 @@ void TextPatcher::patch(const std::string& newPathQt, const std::string& fileNam
 
 string_utils::strings TextPatcher::readStringsFromFile(const std::string &fileName) const
 {
-    std::ifstream file(fileName, std::ios::in | std::ios::ate);
+    std::ifstream file(fileName.c_str(), std::ios::in | std::ios::ate);
     if (!file.is_open())
-        throw std::runtime_error(string_utils::format("Coundn't open file for reading: %s", fileName));
+        throw std::runtime_error(string_utils::format("Coundn't open file for reading: %s", fileName.c_str()));
 
     string_utils::strings fileData;
 
@@ -44,7 +45,7 @@ string_utils::strings TextPatcher::readStringsFromFile(const std::string &fileNa
     while( !file.eof() ) {
         std::string line;
         if (std::getline(file, line).bad())
-            throw std::runtime_error(string_utils::format("Failed to read from file: %s", fileName));
+            throw std::runtime_error(string_utils::format("Failed to read from file: %s", fileName.c_str()));
         fileData.push_back(line);
     }
 
@@ -73,9 +74,9 @@ bool TextPatcher::isQtFilesTreeDefinition(const std::string& firstPart) const
 
 void TextPatcher::writeStringsToFile(const std::string& fileName, const string_utils::strings& strings) const
 {
-    std::ofstream file(fileName, std::ios::out | std::ios::trunc);
+    std::ofstream file(fileName.c_str(), std::ios::out | std::ios::trunc);
     if (!file.is_open())
-        throw std::runtime_error(string_utils::format("Coundn't open file for reading: %s", fileName));
+        throw std::runtime_error(string_utils::format("Coundn't open file for reading: %s", fileName.c_str()));
 
     file.seekp(0, std::ios::beg);
     for ( string_utils::strings::const_iterator it = strings.begin(); it != strings.end(); ++it ) {
@@ -86,6 +87,6 @@ void TextPatcher::writeStringsToFile(const std::string& fileName, const string_u
         }
 
         if (!file.write(line.c_str(), line.size()))
-            throw std::runtime_error(string_utils::format("Failed to write to file: %s", fileName));
+            throw std::runtime_error(string_utils::format("Failed to write to file: %s", fileName.c_str()));
     }
 }
